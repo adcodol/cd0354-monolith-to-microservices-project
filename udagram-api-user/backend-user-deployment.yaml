@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: udagram-api-user
+  labels:
+    app: udagram-api-user
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: udagram-api-user
+  template:
+    metadata:
+      labels:
+        app: udagram-api-user
+    spec:
+      containers:
+      - name: udagram-api-user
+        image: jonathandench/udagram-api-user:v1
+        ports:
+        - containerPort: 80
+        env:
+        - name: URL
+          valueFrom:
+            configMapKeyRef:
+              name: myconfigmap
+              key: url
+        - name: POSTGRES_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: postgressecret
+              key: POSTGRES_USERNAME
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgressecret
+              key: POSTGRES_PASSWORD
+        - name: POSTGRES_DB
+          valueFrom:
+            configMapKeyRef:
+              name: myconfigmap
+              key: database
+        - name: POSTGRES_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: myconfigmap
+              key: host
+        - name: JWT_SECRET
+          valueFrom:
+            configMapKeyRef:
+              name: myconfigmap
+              key: secret
